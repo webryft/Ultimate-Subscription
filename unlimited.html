@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unlimited Data</title>
+
+<style>
+:root{
+  --brand:#228B22;
+  --white:#fffa;
+  --bg:#f4f4;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--brand);
+  color:#fff;
+}
+
+/* header */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+}
+header h2{margin:0;font-size:20px}
+nav a{
+  color:#fff;
+  margin-left:18px;
+  text-decoration:none;
+  font-weight:600;
+}
+
+/* hero */
+.hero{
+  text-align:center;
+  padding:50px 20px;
+}
+.hero h1{
+  max-width:900px;
+  margin:0 auto 12px;
+  font-size:30px;
+}
+.hero p{
+  max-width:800px;
+  margin:auto;
+  color:rgba(255,255,255,.95);
+}
+
+/* tools grid */
+.tools-wrap{
+  background:var(--bg);
+  padding:40px 20px;
+}
+.tools{
+  max-width:1100px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.tool{
+  background:#fff;
+  color:#000;
+  border-radius:10px;
+  padding:18px;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  transition:.25s;
+}
+.tool:hover{transform:translateY(-4px)}
+.tool img{
+  width:90px;
+  height:90px;
+  object-fit:contain;
+}
+.tool h4{margin:10px 0 4px}
+.tool small{color:#666}
+
+/* modal + loader */
+.modal-bg,.loader{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+.modal-bg{background:rgba(0,0,0,.65)}
+.modal{
+  background:#fff;
+  color:#000;
+  width:94%;
+  max-width:520px;
+  border-radius:14px;
+  padding:22px;
+  animation:pop .25s ease;
+}
+@keyframes pop{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+.modal img{
+  width:70px;
+  margin-bottom:8px;
+}
+.modal h3{margin:6px 0}
+.modal ol{
+  padding-left:18px;
+  color:#333;
+}
+.modal .actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top:14px;
+}
+.modal button{
+  padding:10px 16px;
+  border:none;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+}
+.primary{background:var(--brand);color:#fff}
+.secondary{background:#ddd}
+
+/* loader */
+.loader{
+  background:var(--brand);
+  color:#fff;
+  font-size:18px;
+}
+
+/* responsive */
+@media(max-width:800px){
+  .tools{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h2>Unlimited Data</h2>
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Unlimited Data Tools</h1>
+  <p>
+    this free tools will help you browse
+    safely, bypass restrictions, and manage data efficiently.
+  </p>
+</section>
+
+<section class="tools-wrap">
+  <div id="tools" class="tools"></div>
+</section>
+
+<!-- modal -->
+<div id="modal" class="modal-bg"></div>
+
+<!-- loader -->
+<div id="loader" class="loader">Loading…</div>
+
+<script>
+/* =======================
+   TOOLS DATA (EDIT HERE)
+======================= */
+const tools = [
+{
+  name:"Stack VPN",
+  image:"stackvpn.jpg",
+  link:"https://play.google.com/store",
+  steps:[
+    "Download and install Stack VPN from Play Store.",
+    "Open the app and allow VPN permission.",
+    "Select any free server.",
+    "Tap Connect and wait until connected.",
+    "Start browsing securely."
+  ]
+},
+{
+  name:"Psiphon",
+  image:"psiphon.jpg",
+  link:"https://play.google.com/store",
+  steps:[
+    "Install Psiphon from Play Store.",
+    "Open the app and tap Start.",
+    "Wait until connection is successful.",
+    "Use the built-in browser or your own.",
+    "Enjoy unrestricted access."
+  ]
+},
+{
+  name:"Orbot/Tor",
+  image:"Orbot/Tor.jpg",
+  link:"https://play.google.com/store",
+  steps:[
+    "Install Orbot/Tor.",
+    "Go to Settings and enable VPN.",
+    "Enable data saver for efficiency.",
+    "Browse normally within the app."
+  ]
+}
+];
+
+/* =======================
+   RENDER TOOLS
+======================= */
+const toolsWrap=document.getElementById("tools");
+tools.forEach((t,i)=>{
+  toolsWrap.innerHTML+=`
+    <div class="tool" onclick="openTool(${i})">
+      <img src="${t.image}">
+      <h4>${t.name}</h4>
+      <small>Tap to view details</small>
+    </div>
+  `;
+});
+
+const modal=document.getElementById("modal");
+const loader=document.getElementById("loader");
+
+/* =======================
+   OPEN TOOL POPUP
+======================= */
+function openTool(i){
+  loader.style.display="flex";
+  setTimeout(()=>{
+    loader.style.display="none";
+    const t=tools[i];
+    modal.innerHTML=`
+      <div class="modal">
+        <img src="${t.image}">
+        <h3>${t.name}</h3>
+        <p><strong>How to use:</strong></p>
+        <ol>${t.steps.map(s=>`<li>${s}</li>`).join("")}</ol>
+        <div class="actions">
+          <button class="secondary" onclick="closeModal()">Close</button>
+          <button class="primary" onclick="download('${t.link}')">Download</button>
+        </div>
+      </div>
+    `;
+    modal.style.display="flex";
+  },2000);
+}
+
+function closeModal(){
+  modal.style.display="none";
+  modal.innerHTML="";
+}
+
+function download(link){
+  loader.style.display="flex";
+  setTimeout(()=>{window.open(link,"_blank")},1500);
+}
+
+/* close on outside click */
+modal.addEventListener("click",e=>{
+  if(e.target===modal)closeModal();
+});
+</script>
+</body>
+</html>
